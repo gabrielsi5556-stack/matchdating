@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchLite — Conexões Simples</title>
+  <style>
+    :root {
+      --primary: #ff4b6e;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #212529;
+      --text-muted: #6c757d;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card-stack {
+      position: relative;
+      flex: 1;
+      min-height: 420px;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 70%;
+      object-fit: cover;
+      background-color: #dee2e6;
+    }
+
+    .card-info {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-info h2 {
+      font-size: 1.3rem;
+    }
+
+    .card-info p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding-bottom: 10px;
+    }
+
+    .btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.9);
+    }
+
+    .btn-dislike { color: #dc3545; }
+    .btn-like { color: #28a745; background: #e8f5e9; }
+
+    .empty-state {
+      display: none;
+      text-align: center;
+      margin: auto;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">🔥 MatchLite</div>
+    <div>👤 Profile</div>
+  </header>
+
+  <main class="app-container">
+    <div class="card-stack" id="cardStack">
+      
+      <!-- Card 1 -->
+      <div class="card" id="card1">
+        <img class="card-img" src="https://picsum.photos/400/500?random=1" alt="Perfil">
+        <div class="card-info">
+          <h2>Camila, 24</h2>
+          <p>📍 São Paulo • 3 km de distância</p>
+          <p>Amo café, fotografia e viagens nos fins de semana ☕📸</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card" id="card2" style="transform: scale(0.95) translateY(10px); z-index: -1;">
+        <img class="card-img" src="https://picsum.photos/400/500?random=2" alt="Perfil">
+        <div class="card-info">
+          <h2>Lucas, 27</h2>
+          <p>📍 Rio de Janeiro • 8 km de distância</p>
+          <p>Desenvolvedor, fã de jogos indie e corrida de rua 🏃‍♂️🎮</p>
+        </div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>Nenhum perfil por perto!</h3>
+        <p>Volte mais tarde para ver novas pessoas.</p>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-dislike" onclick="handleSwipe('left')">❌</button>
+      <button class="btn btn-like" onclick="handleSwipe('right')">💚</button>
+    </div>
+  </main>
+
+  <script>
+    let currentCardIndex = 1;
+
+    function handleSwipe(direction) {
+      const currentCard = document.getElementById(`card${currentCardIndex}`);
+      
+      if (!currentCard) return;
+
+      if (direction === 'left') {
+        currentCard.style.transform = 'translateX(-150%) rotate(-15deg)';
+      } else {
+        currentCard.style.transform = 'translateX(150%) rotate(15deg)';
+      }
+      
+      currentCard.style.opacity = '0';
+
+      setTimeout(() => {
+        currentCard.remove();
+        currentCardIndex++;
+        
+        const nextCard = document.getElementById(`card${currentCardIndex}`);
+        if (nextCard) {
+          nextCard.style.transform = 'scale(1) translateY(0)';
+          nextCard.style.zIndex = '1';
+        } else {
+          document.getElementById('emptyState').style.display = 'block';
+        }
+      }, 300);
+    }
+  </script>
+</body>
+</html>
